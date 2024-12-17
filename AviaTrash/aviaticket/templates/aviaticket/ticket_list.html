@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 20px auto;">
+    <div class="ticket-row" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+        {% for flight in page_obj %}
+            <div class="ticket-card" style="border: 2px solid #87CEEB; border-radius: 8px; padding: 15px; width: 22%; margin-bottom: 40px;">
+                <!-- Место прилета -->
+                <h2 style="margin: 0; font-size: 22px; font-weight: bold;">
+                    {{ flight.flight_to }}
+                </h2>
+
+                <!-- Место вылета -->
+                <p style="margin: 5px 0 10px; font-size: 16px; color: #555;">
+                    из {{ flight.flight_from }}
+                </p>
+
+                <!-- Дата вылета -->
+                <p style="margin: 0; font-size: 18px; font-weight: normal;">
+                    Дата вылета: {{ flight.day_of_departure }}
+                </p>
+
+                <!-- Стоимость билета -->
+                <p style="margin: 5px 0 0; font-size: 18px; color: #333;">
+                    Цена: {{ flight.price }} ₽
+                </p>
+            </div>
+            {% if forloop.counter|divisibleby:3 %}
+                </div>
+                <div class="ticket-row" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+            {% endif %}
+        {% empty %}
+            <p>Рейсов не найдено.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Пагинация -->
+    <nav>
+        <ul style="list-style: none; display: flex; justify-content: center; padding: 0;">
+            {% for p in page_obj.paginator.page_range %}
+            <li style="margin: 0 5px;">
+                <a href="?page={{ p }}" style="text-decoration: none; padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; color: #333;">
+                    {{ p }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}
