@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="profile-container">
+    <h2 class="profile-title">Личный кабинет</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="profile-save-button">
+            Сохранить изменения
+        </button>
+    </form>
+    <p class="profile-password-change">
+        <a href="{% url 'personal:password_change' %}" class="profile-link">Сменить пароль</a>
+    </p>
+</div>
+{% endblock %}

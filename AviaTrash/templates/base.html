@@ -4,65 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Aviatrash{% endblock %}</title>
-    <style>
-        /* Основные стили для страницы */
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f0f8ff;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* Минимальная высота страницы */
-        }
-
-        .header {
-            background-color: #004080;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .header a {
-            color: #fff;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-        }
-
-        .header a:hover {
-            text-decoration: underline;
-        }
-
-        .content {
-            flex: 1; /* Растягивает содержимое на доступное пространство */
-            padding: 20px;
-            text-align: center;
-        }
-
-        .footer {
-            background-color: #004080;
-            color: #fff;
-            text-align: center;
-            padding: 5px 10px; /* Уменьшаем отступы */
-            font-size: 12px; /* Меньший шрифт */
-        }
-    </style>
+    <!-- Загружаем тег static -->
+    {% load static %}
+    <!-- Подключаем внешний файл стилей -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <!-- Шапка -->
     <div class="header">
         <a href="{% url 'list_tickets' %}">Авиабилеты</a>
+        <div class="auth-buttons">
+            {% if user.is_authenticated %}
+                <a href="{% url 'personal:profile' %}">Личный кабинет</a>
+                <form action="{% url 'personal:logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-button">Выйти</button>
+                </form>
+            {% else %}
+                <a href="{% url 'personal:login' %}">Войти</a>
+            {% endif %}
+        </div>
     </div>
-
     <!-- Основное содержимое -->
     <div class="content">
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
     </div>
-
-    <!-- Футер -->
+    <!-- Подвал -->
     <div class="footer">
-        Aviatrash - поиск самых дорогих авиабилетов. Все совпадения случайны.
+        <p>&copy; 2024 Aviatrash - поиск самых дорогих авиабилетов. Все совпадения случайны. Все билеты выдуманы.</p>
     </div>
 </body>
 </html>

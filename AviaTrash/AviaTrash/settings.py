@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'aviaticket',
+    'django_extensions',
+    'aviaticket.apps.AviaticketConfig',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -55,8 +57,10 @@ ROOT_URLCONF = 'AviaTrash.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Путь к глобальным шаблонам
-        'APP_DIRS': True,  # Включаем поиск шаблонов в приложениях
+        'DIRS': [
+            BASE_DIR / 'templates',  # Папка для базовых шаблонов
+        ],
+        'APP_DIRS': True,  # Это гарантирует, что Django будет искать шаблоны внутри каждого приложения
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -118,9 +122,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+# Для разработки:
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # Убедитесь, что статичные файлы хранятся в папке static в корне проекта
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'users.User'

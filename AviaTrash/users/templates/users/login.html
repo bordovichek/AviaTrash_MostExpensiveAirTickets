@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="auth-container">
+    <h2 class="auth-title">Вход</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Выводим поля формы -->
+
+        {% if form.errors %}
+            <div class="form-errors">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <p class="error">{{ error }}</p> <!-- Показываем ошибки для каждого поля -->
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <button type="submit" class="auth-button">
+            Войти
+        </button>
+    </form>
+    <p class="auth-link">
+        Нет аккаунта? <a href="{% url 'personal:register' %}" class="auth-link-text">Регистрация</a>
+    </p>
+</div>
+{% endblock %}
