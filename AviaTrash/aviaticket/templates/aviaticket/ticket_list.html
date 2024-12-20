@@ -4,21 +4,29 @@
 <div class="content-container">
     <div class="ticket-row">
         {% for flight in page_obj %}
-            <div class="ticket-card">
-                <div class="ticket-card-content">
-                    <h2 class="flight-to">{{ flight.flight_to }}</h2>
-                    <p class="flight-from">из {{ flight.flight_from }}</p>
-                    <p class="departure-date">Дата вылета: {{ flight.day_of_departure }}</p>
-                    <p class="price">Цена: {{ flight.price }} ₽</p>
+                <div class="ticket-card">
+                    <div class="ticket-card-content">
+                        <h2 class="flight-to">{{ flight.flight_to }}</h2>
+                        <p class="flight-from">из {{ flight.flight_from }}</p>
+                        <p class="departure-date">Дата вылета: {{ flight.day_of_departure }}</p>
+                        <p class="price">Цена: {{ flight.price }} ₽</p>
+
+                        <div class="actions">
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'flight_detail' flight.slug %}" class="buy-button">Купить билет</a>
+                            {% else %}
+                                <p class="login-message">Пожалуйста, <a href="{% url 'personal:login' %}">войдите</a>, чтобы купить билет.</p>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
         {% empty %}
             <p>Рейсов не найдено.</p>
         {% endfor %}
     </div>
 
     {% if page_obj.has_other_pages %}
-    <nav class="pagination">  <!-- Изменено имя класса на .pagination -->
+    <nav class="pagination">
         <ul>
             {% for p in page_obj.paginator.page_range %}
             <li class="page-num">

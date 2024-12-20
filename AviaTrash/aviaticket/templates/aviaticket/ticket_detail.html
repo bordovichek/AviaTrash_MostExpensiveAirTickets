@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Информация о рейсе</h1>
+  <div>
+    <p><strong>Откуда:</strong> {{ flight.flight_from }}</p>
+    <p><strong>Куда:</strong> {{ flight.flight_to }}</p>
+    <p><strong>Дата вылета:</strong> {{ flight.day_of_departure }}</p>
+    <p><strong>Цена:</strong> {{ flight.price }} ₽</p>
+    <p><strong>Авиакомпания:</strong> {{ flight.airline.name }}</p>
+    <p><strong>Количество пересадок:</strong> {{ flight.amount_of_transfers|default:'Нет пересадок' }}</p>
+  </div>
+
+  <form method="POST" action="{% url 'ticket_purchase' flight.slug %}">
+    {% csrf_token %}
+    <button type="submit">Купить билет</button>
+  </form>
+{% endblock %}

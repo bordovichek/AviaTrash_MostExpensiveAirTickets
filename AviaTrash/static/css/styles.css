@@ -35,15 +35,18 @@ body {
 }
 
 .header .auth-buttons a {
-    background-color: #87CEEB;
-    padding: 8px 15px;
-    border-radius: 5px;
-    color: #fff;
+    background-color: transparent; /* Убираем голубой фон */
+    color: #87CEEB; /* Цвет текста */
     text-decoration: none;
+    font-size: 20px; /* Шрифт больше */
+    font-weight: bold;
+    padding: 0; /* Убираем все отступы */
+    margin: 0;
+    line-height: 3; /* Центрирование текста */
 }
 
 .header .auth-buttons a:hover {
-    background-color: #004080;
+    color: #fff; /* Изменяем цвет текста при наведении */
 }
 
 .content {
@@ -296,15 +299,6 @@ nav ul li a:hover {
 .password-change-form-button:hover {
     background-color: #003366;
 }
-/* Контейнер для личного кабинета */
-.profile-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #87CEEB;
-    border-radius: 8px;
-    background-color: #fff;
-}
 
 /* Заголовок страницы */
 .profile-title {
@@ -377,16 +371,99 @@ nav ul li a:hover {
 }
 /* Кнопка для выхода из аккаунта */
 .logout-button {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 16px;
+    background: none; /* Полностью убираем фон */
+    color: #ff4d4d; /* Красный цвет текста */
+    border: none; /* Убираем границу */
+    padding: 0; /* Полное отсутствие отступов */
+    margin: 0; /* Полное отсутствие внешних отступов */
+    font-size: 20px; /* Размер шрифта */
+    font-weight: bold; /* Жирный текст */
+    line-height: 1; /* Минимальная высота строки */
     cursor: pointer;
-    font-size: 16px;
-    margin-left: 10px;
 }
 
 .logout-button:hover {
-    background-color: #e60000;
+    color: #e60000; /* Текст темнее при наведении */
+}
+.buy-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.buy-button:hover {
+    background-color: #0056b3;
+}
+
+.login-message a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.profile-left {
+    width: 65%;
+}
+
+.profile-right {
+    width: 65%;
+    padding-left: 20px;
+}
+
+.ticket-list {
+    list-style: none;
+    padding: 0;
+}
+
+.ticket-item {
+    margin-bottom: 20px;
+}
+
+.ticket-item p {
+    margin: 5px 0;
+}
+
+/* Стили для контейнера профиля */
+.profile-container {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+/* Левая колонка с формой */
+.profile-left {
+    flex: 1; /* Занимает доступное пространство */
+    max-width: 48%; /* Ограничивает ширину */
+}
+
+/* Правая колонка с историей покупок */
+.profile-right {
+    flex: 1; /* Занимает доступное пространство */
+    max-width: 48%; /* Ограничивает ширину */
+    border-left: 2px solid #ddd; /* Добавляем разделитель между блоками */
+    padding-left: 20px; /* Отступ от разделителя */
+}
+
+/* Стили для списка билетов */
+.ticket-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.ticket-item {
+    margin-bottom: 15px;
+}
+
+.ticket-item p {
+    margin: 5px 0;
+}
+
+/* Стили для заголовков */
+.profile-title,
+.profile-password-change,
+.profile-right h3 {
+    margin-bottom: 20px;
 }

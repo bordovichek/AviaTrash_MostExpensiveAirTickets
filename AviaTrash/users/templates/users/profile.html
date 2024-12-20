@@ -2,16 +2,52 @@
 
 {% block content %}
 <div class="profile-container">
-    <h2 class="profile-title">Личный кабинет</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="profile-save-button">
-            Сохранить изменения
-        </button>
-    </form>
-    <p class="profile-password-change">
-        <a href="{% url 'personal:password_change' %}" class="profile-link">Сменить пароль</a>
-    </p>
+    <div class="profile-left">
+        <!-- Форма редактирования профиля -->
+        <h2 class="profile-title">Личный кабинет</h2>
+        <form method="post" class="profile-form">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="profile-save-button">
+                Сохранить изменения
+            </button>
+        </form>
+        <p class="profile-password-change">
+            <a href="{% url 'personal:password_change' %}" class="profile-link">Сменить пароль</a>
+        </p>
+    </div>
+
+    <div class="profile-right">
+        <!-- История покупок -->
+        <h3>История покупок</h3>
+        {% if tickets %}
+            <ul class="ticket-list">
+                {% for ticket in tickets %}
+                    <li class="ticket-item">
+                        <div class="ticket-details">
+                            <p><strong>Рейс:</strong> {{ ticket.flight.flight_from }} → {{ ticket.flight.flight_to }}</p>
+                            <p><strong>Дата:</strong> {{ ticket.flight.day_of_departure }}</p>
+                            <p><strong>Цена:</strong> {{ ticket.flight.price }} ₽</p>
+                            <p><strong>Статус:</strong> {{ ticket.status }}</p>
+                        </div>
+
+                        <!-- Кнопка для отмены билета -->
+                        {% if ticket.status != 'cancelled' %}
+                            <form method="post" action="{% url 'cancel_ticket' ticket.id %}" class="ticket-cancel-form">
+                                {% csrf_token %}
+                                <button type="submit" class="cancel-ticket-button">Отменить билет</button>
+                            </form>
+                        {% else %}
+                            <p><strong>Билет отменен</strong></p>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>У вас еще нет купленных билетов.</p>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

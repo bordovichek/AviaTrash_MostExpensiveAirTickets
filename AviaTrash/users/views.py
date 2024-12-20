@@ -7,6 +7,8 @@ from django.views.generic.edit import FormView, UpdateView
 from .forms import LoginUserForm, RegisterUserForm, ProfileUserForm, UserPasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView, LoginView
 
+from aviaticket.models import Ticket
+
 
 class RegisterUserView(FormView):
     template_name = 'users/register.html'
@@ -41,6 +43,11 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tickets'] = Ticket.objects.filter(passenger=self.request.user).order_by('-booking_date')
+        return context
 
 
 # Смена пароля
