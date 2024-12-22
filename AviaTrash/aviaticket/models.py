@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils.text import slugify
-from unidecode import unidecode
 
 def translit_to_eng(s: str) -> str:
     d = {'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
@@ -15,7 +14,7 @@ def translit_to_eng(s: str) -> str:
 
 class Flight(models.Model):
     flight_from = models.CharField(max_length=50, verbose_name='Откуда')
-    flight_to = models.CharField(max_length=50, verbose_name='Куда')
+    flight_to = models.ForeignKey('CityWithPhoto', on_delete=models.CASCADE, null=True, blank=True, verbose_name='Куда')
     airline = models.ForeignKey('Airline', on_delete=models.CASCADE, related_name='airline', verbose_name='Авиакомпания')
     time_in_flight = models.DateTimeField(verbose_name='Время в пути')
     day_of_departure = models.DateField(verbose_name='Дата вылета')
@@ -26,14 +25,14 @@ class Flight(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            to = translit_to_eng(self.flight_to.replace(" ", "").replace("-", ""))
+            to = translit_to_eng(self.flight_to.city_name.replace(" ", "").replace("-", ""))
             from_ = translit_to_eng(self.flight_from.replace(" ", "").replace("-", ""))
             airline = self.airline.name.replace(" ", "").replace("-", "")
             self.slug = slugify(f"{to}_{from_}_{airline}")
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Рейс {self.airline}: {self.flight_from} → {self.flight_to}, {self.day_of_departure}, {self.price} ₽"
+        return f"Рейс {self.airline}: {self.flight_from} → {self.flight_to.city_name}, {self.day_of_departure}, {self.price} ₽"
 
 
 
@@ -69,3 +68,18 @@ class Airline(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CityWithPhoto(models.Model):
+    city_name = models.CharField(
+        max_length=55,
+        unique=True,
+        verbose_name="Название города"
+    )
+    photo = models.FileField(
+        upload_to='media_photo_city',
+        verbose_name="Фотография города"
+    )
+
+    def __str__(self):
+        return self.city_name

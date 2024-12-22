@@ -1,7 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, get_user_model
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, get_user_model
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView, UpdateView
 from .forms import LoginUserForm, RegisterUserForm, ProfileUserForm, UserPasswordChangeForm

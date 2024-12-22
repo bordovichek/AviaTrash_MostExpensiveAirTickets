@@ -11,7 +11,7 @@ class FlightListView(ListView):
     model = Flight
     template_name = 'aviaticket/ticket_list.html'
     context_object_name = 'page_obj'
-    paginate_by = 13
+    paginate_by = 15
     ordering = ['day_of_departure']
 
     def get_queryset(self):

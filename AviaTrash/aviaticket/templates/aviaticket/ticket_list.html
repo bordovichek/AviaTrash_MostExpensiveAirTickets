@@ -5,6 +5,9 @@
     <div class="ticket-row">
         {% for flight in page_obj %}
                 <div class="ticket-card">
+                {% if flight.flight_to.photo %}
+    <div class="ticket-photo" style="background-image: url('{{ flight.flight_to.photo.url }}');"></div>
+{% endif %}
                     <div class="ticket-card-content">
                         <h2 class="flight-to">{{ flight.flight_to }}</h2>
                         <p class="flight-from">из {{ flight.flight_from }}</p>
