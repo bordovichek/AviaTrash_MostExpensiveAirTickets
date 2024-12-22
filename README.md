@@ -44,7 +44,6 @@ AviaTrash — это шуточный пет-проект для брониро�
 
 ![image](https://github.com/user-attachments/assets/0f4d79be-278d-440a-be08-9ee2cc01c580)
 ![image](https://github.com/user-attachments/assets/cc3debec-9817-47cd-8a54-1b3157155dd7)
-![image](https://github.com/user-attachments/assets/07318813-f2ed-4210-b489-2c42ab8bcc31)
 ![image](https://github.com/user-attachments/assets/84d1b5c5-7a67-4c73-9a73-d81aa81de371)
 ![image](https://github.com/user-attachments/assets/280f5c7f-7e00-4107-b012-993e6a589711)
 ![image](https://github.com/user-attachments/assets/2cc0a648-432b-4caf-8cc5-678b72bbeabf)
