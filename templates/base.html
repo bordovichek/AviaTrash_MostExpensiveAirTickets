@@ -1,0 +1,73 @@
+{% load static %}<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Самые дорогие авиабилеты{% endblock %} · AviaTrash</title>
+  <meta name="description" content="AviaTrash — шуточный сервис поиска самых дорогих авиабилетов на выдуманные рейсы.">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+  {% include "includes/icons.html" %}
+  {% with url_name=request.resolver_match.url_name %}
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="{% url 'aviaticket:flight_list' %}" aria-label="AviaTrash — на главную">
+        <span class="logo__mark"><svg class="icon"><use href="#i-plane"></use></svg></span>
+        <span class="logo__text">Avia<b>Trash</b></span>
+      </a>
+      <nav class="site-nav" aria-label="Основная навигация">
+        <a class="site-nav__link" href="{% url 'aviaticket:flight_list' %}"
+           {% if url_name == "flight_list" or url_name == "flight_detail" %}aria-current="page"{% endif %}>Рейсы</a>
+        {% if user.is_authenticated %}
+          <a class="site-nav__link" href="{% url 'aviaticket:ticket_list' %}"
+             {% if url_name == "ticket_list" or url_name == "ticket_detail" %}aria-current="page"{% endif %}>Мои билеты</a>
+          <a class="user-chip" href="{% url 'users:profile' %}" title="Профиль"
+             {% if url_name == "profile" or url_name == "password_change" %}aria-current="page"{% endif %}>
+            <span class="avatar">{{ user.initials }}</span>
+            <span class="user-chip__name">{{ user.display_name }}</span>
+          </a>
+          <form method="post" action="{% url 'users:logout' %}">
+            {% csrf_token %}
+            <button class="icon-button" type="submit" title="Выйти" aria-label="Выйти">
+              <svg class="icon"><use href="#i-logout"></use></svg>
+            </button>
+          </form>
+        {% else %}
+          <a class="site-nav__link" href="{% url 'users:login' %}{% if request.resolver_match.app_name != 'users' %}?next={{ request.get_full_path|urlencode }}{% endif %}">Войти</a>
+          <a class="btn btn--primary btn--sm" href="{% url 'users:register' %}">Регистрация</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+  {% endwith %}
+
+  {% if messages %}
+    <div class="container toasts" role="status" aria-live="polite">
+      {% for message in messages %}
+        <div class="alert alert--{{ message.level_tag }}">
+          <span>{{ message }}</span>
+          <button class="alert__close" type="button" aria-label="Закрыть" onclick="this.parentElement.remove()">
+            <svg class="icon"><use href="#i-x"></use></svg>
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="site-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p>© 2024–{% now "Y" %} AviaTrash — поиск самых дорогих авиабилетов.</p>
+      <p class="muted">Все совпадения случайны. Все билеты выдуманы. Деньги, к счастью, тоже.</p>
+    </div>
+  </footer>
+</body>
+</html>

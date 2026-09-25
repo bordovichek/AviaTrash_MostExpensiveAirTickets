@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<section class="auth">
+  <div class="card auth__card">
+    <h1 class="auth__title">С возвращением</h1>
+    <p class="muted">Войдите, чтобы покупать билеты и хранить посадочные.</p>
+
+    <form class="form" method="post">
+      {% csrf_token %}
+      {% include "includes/form_errors.html" %}
+      {% for field in form %}{% include "includes/form_field.html" %}{% endfor %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <button class="btn btn--primary btn--block btn--lg" type="submit">Войти</button>
+    </form>
+
+    <p class="auth__switch">Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
+  </div>
+</section>
+{% endblock %}

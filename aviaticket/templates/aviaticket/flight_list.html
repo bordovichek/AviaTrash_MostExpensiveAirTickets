@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load avia %}
+
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <p class="hero__eyebrow">Экономить — не наш стиль</p>
+    <h1 class="hero__title">Найдём самые дорогие<br>авиабилеты</h1>
+    <p class="hero__lead">Сортируем по цене — от «ой» до «ой-ой-ой». Все рейсы выдуманы, но выглядят убедительно.</p>
+
+    <form class="search" method="get" action="{% url 'aviaticket:flight_list' %}" role="search">
+      {% for field in form %}
+        <div class="search__field">
+          <label class="search__label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+        </div>
+      {% endfor %}
+      <button class="btn btn--accent btn--lg search__submit" type="submit">
+        <svg class="icon"><use href="#i-search"></use></svg> Найти
+      </button>
+    </form>
+  </div>
+</section>
+
+<section class="container section">
+  <header class="section__head">
+    <div>
+      <h2 class="section__title">{% if form.is_filtered %}Результаты поиска{% else %}Все рейсы{% endif %}</h2>
+      <p class="muted">Найдено {{ paginator.count }} {{ paginator.count|plural_ru:"рейс,рейса,рейсов" }}</p>
+    </div>
+    {% if form.is_filtered %}
+      <a class="btn btn--ghost btn--sm" href="{% url 'aviaticket:flight_list' %}">
+        <svg class="icon"><use href="#i-x"></use></svg> Сбросить фильтры
+      </a>
+    {% endif %}
+  </header>
+
+  {% if form.errors %}
+    <div class="alert alert--error">
+      {% for field in form %}{% for error in field.errors %}<span>{{ field.label }}: {{ error }}</span>{% endfor %}{% endfor %}
+    </div>
+  {% endif %}
+
+  {% if flights %}
+    <div class="flight-grid">
+      {% for flight in flights %}
+        {% include "aviaticket/includes/flight_card.html" %}
+      {% endfor %}
+    </div>
+    {% include "includes/pagination.html" %}
+  {% else %}
+    <div class="empty-state">
+      <svg class="icon empty-state__icon"><use href="#i-plane"></use></svg>
+      <h3>Ничего не нашлось</h3>
+      <p class="muted">Попробуйте другое направление или дату — дорогие билеты где-то точно есть.</p>
+      <a class="btn btn--primary" href="{% url 'aviaticket:flight_list' %}">Показать все рейсы</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

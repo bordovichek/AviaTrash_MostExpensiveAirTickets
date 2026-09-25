@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load avia %}
+
+{% block title %}{{ flight.origin.name }} → {{ flight.destination.name }}, {{ flight.departure_at|date:"j E" }}{% endblock %}
+
+{% block content %}
+<section class="flight-hero"{% if flight.destination.photo %} style="--hero-image: url('{{ flight.destination.photo.url }}')"{% endif %}>
+  <div class="container flight-hero__inner">
+    <a class="back-link" href="{% url 'aviaticket:flight_list' %}">
+      <svg class="icon"><use href="#i-arrow-left"></use></svg> Все рейсы
+    </a>
+    <p class="flight-hero__eyebrow">{{ flight.number }} · {{ flight.airline.name }}</p>
+    <h1 class="flight-hero__title">{{ flight.origin.name }} <span aria-hidden="true">→</span> {{ flight.destination.name }}</h1>
+    <p class="flight-hero__date">{{ flight.departure_at|date:"l, j E Y" }}</p>
+  </div>
+</section>
+
+<div class="container flight-layout">
+  <section class="card itinerary">
+    <h2 class="card__title">Маршрут</h2>
+    <div class="itinerary__route">
+      <div class="itinerary__point">
+        <span class="itinerary__time">{{ flight.departure_at|time:"H:i" }}</span>
+        <strong>{{ flight.origin.name }}</strong>
+        <span class="muted">{{ flight.origin.code }} · {{ flight.departure_at|date:"j E, D" }}</span>
+      </div>
+      <div class="itinerary__path">
+        <span class="itinerary__plane"><svg class="icon"><use href="#i-plane"></use></svg></span>
+        <span>{{ flight.duration|duration }}</span>
+        <span class="muted">{{ flight.transfers|transfers }}</span>
+      </div>
+      <div class="itinerary__point itinerary__point--end">
+        <span class="itinerary__time">
+          {{ flight.arrival_at|time:"H:i" }}{% if flight.arrival_at|date:"Ymd" != flight.departure_at|date:"Ymd" %}<sup title="Прилёт на следующий день">+1</sup>{% endif %}
+        </span>
+        <strong>{{ flight.destination.name }}</strong>
+        <span class="muted">{{ flight.destination.code }} · {{ flight.arrival_at|date:"j E, D" }}</span>
+      </div>
+    </div>
+
+    <dl class="facts">
+      <div><dt>Авиакомпания</dt><dd>{{ flight.airline.name }} ({{ flight.airline.code }})</dd></div>
+      <div><dt>Страна перевозчика</dt><dd>{{ flight.airline.country }}</dd></div>
+      <div><dt>Летает с</dt><dd>{{ flight.airline.founded_year }} года</dd></div>
+      <div><dt>Свободных мест</dt><dd>{{ seats_left }}</dd></div>
+    </dl>
+  </section>
+
+  <aside class="card purchase">
+    <p class="purchase__label">Цена за одного пассажира</p>
+    <p class="purchase__price">{{ flight.price|rub }}</p>
+    <p class="muted purchase__note">Эконом-класс по цене бизнеса. Всё по-честному.</p>
+
+    {% if ticket and ticket.is_active %}
+      <div class="purchase__owned">
+        <svg class="icon"><use href="#i-ticket"></use></svg>
+        <span>Билет уже у вас — место <b>{{ ticket.seat }}</b></span>
+      </div>
+      <a class="btn btn--primary btn--block btn--lg" href="{{ ticket.get_absolute_url }}">Открыть посадочный</a>
+    {% elif flight.is_departed %}
+      <p class="purchase__closed">Рейс уже улетел — продажа закрыта.</p>
+    {% elif user.is_authenticated %}
+      <form method="post" action="{% url 'aviaticket:buy_ticket' flight.slug %}">
+        {% csrf_token %}
+        <button class="btn btn--accent btn--block btn--lg" type="submit">
+          {% if ticket %}Вернуть билет{% else %}Купить билет{% endif %}
+        </button>
+      </form>
+    {% else %}
+      <a class="btn btn--accent btn--block btn--lg" href="{% url 'users:login' %}?next={{ request.path|urlencode }}">Войти и купить</a>
+      <p class="muted purchase__note">Нет аккаунта? <a href="{% url 'users:register' %}">Регистрация</a> за минуту.</p>
+    {% endif %}
+  </aside>
+</div>
+
+{% if other_dates %}
+<section class="container section">
+  <h2 class="section__title">Другие даты на этом направлении</h2>
+  <div class="date-list">
+    {% for other in other_dates %}
+      <a class="date-chip" href="{{ other.get_absolute_url }}">
+        <strong>{{ other.departure_at|date:"j E, D" }}</strong>
+        <span>{{ other.departure_at|time:"H:i" }} · {{ other.price|rub }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

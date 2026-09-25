@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load avia %}
+
+{% block title %}Мои билеты{% endblock %}
+
+{% block content %}
+<section class="container section">
+  <header class="page-head">
+    <h1>Мои билеты</h1>
+    <a class="btn btn--ghost" href="{% url 'aviaticket:flight_list' %}">Найти что-нибудь подороже</a>
+  </header>
+
+  {% for title, items in sections %}
+    {% if items %}
+      <h2 class="section__title">{{ title }} <span class="counter">{{ items|length }}</span></h2>
+      <div class="ticket-rows">
+        {% for ticket in items %}
+          {% with flight=ticket.flight %}
+          <a class="ticket-row{% if not ticket.is_active %} is-cancelled{% endif %}" href="{{ ticket.get_absolute_url }}">
+            <span class="ticket-row__thumb">
+              {% if flight.destination.photo %}<img src="{{ flight.destination.photo.url }}" alt="" loading="lazy">{% else %}{{ flight.destination.code }}{% endif %}
+            </span>
+            <span class="ticket-row__main">
+              <strong>{{ flight.origin.name }} → {{ flight.destination.name }}</strong>
+              <span class="muted">{{ flight.departure_at|date:"j E Y, D" }} · {{ flight.departure_at|time:"H:i" }} · {{ flight.number }}</span>
+            </span>
+            <span class="ticket-row__meta">
+              <span class="badge badge--{{ ticket.status }}">{{ ticket.get_status_display }}</span>
+              <code class="pnr">{{ ticket.pnr }}</code>
+            </span>
+            <span class="price">{{ ticket.price|rub }}</span>
+          </a>
+          {% endwith %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  {% if not tickets %}
+    <div class="empty-state">
+      <svg class="icon empty-state__icon"><use href="#i-ticket"></use></svg>
+      <h3>Билетов пока нет</h3>
+      <p class="muted">Самое время потратить лишнее.</p>
+      <a class="btn btn--primary" href="{% url 'aviaticket:flight_list' %}">Выбрать рейс</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}
