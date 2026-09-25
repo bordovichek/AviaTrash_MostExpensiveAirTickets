@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Страница не найдена{% endblock %}
+{% block content %}
+<section class="container section">
+  <div class="empty-state">
+    <svg class="icon empty-state__icon"><use href="#i-plane"></use></svg>
+    <h1>Такого рейса нет</h1>
+    <p class="muted">Кажется, он улетел без вас. Или его никогда и не было.</p>
+    <a class="btn btn--primary" href="{% url 'aviaticket:flight_list' %}">К списку рейсов</a>
+  </div>
+</section>
+{% endblock %}

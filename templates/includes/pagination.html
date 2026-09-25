@@ -1,0 +1,23 @@
+{% if is_paginated %}
+  <nav class="pagination" aria-label="Страницы">
+    {% if page_obj.has_previous %}
+      <a class="pagination__item" href="{% querystring page=page_obj.previous_page_number %}" aria-label="Предыдущая страница">
+        <svg class="icon"><use href="#i-arrow-left"></use></svg>
+      </a>
+    {% endif %}
+    {% for number in page_range %}
+      {% if number == page_obj.paginator.ELLIPSIS %}
+        <span class="pagination__gap">…</span>
+      {% elif number == page_obj.number %}
+        <span class="pagination__item is-current" aria-current="page">{{ number }}</span>
+      {% else %}
+        <a class="pagination__item" href="{% querystring page=number %}">{{ number }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <a class="pagination__item" href="{% querystring page=page_obj.next_page_number %}" aria-label="Следующая страница">
+        <svg class="icon"><use href="#i-arrow-right"></use></svg>
+      </a>
+    {% endif %}
+  </nav>
+{% endif %}

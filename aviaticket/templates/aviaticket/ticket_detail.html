@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load avia %}
+
+{% block title %}Билет {{ ticket.pnr }}{% endblock %}
+
+{% block content %}
+{% with flight=ticket.flight %}
+<section class="container section section--narrow">
+  <a class="back-link back-link--dark" href="{% url 'aviaticket:ticket_list' %}">
+    <svg class="icon"><use href="#i-arrow-left"></use></svg> Мои билеты
+  </a>
+
+  <article class="boarding-pass{% if not ticket.is_active %} is-cancelled{% endif %}">
+    <div class="boarding-pass__main">
+      <header class="boarding-pass__head">
+        <span class="boarding-pass__brand"><svg class="icon"><use href="#i-plane"></use></svg> AviaTrash</span>
+        <span>Посадочный талон</span>
+      </header>
+
+      <div class="boarding-pass__route">
+        <div>
+          <span class="boarding-pass__code">{{ flight.origin.code }}</span>
+          <span class="boarding-pass__city">{{ flight.origin.name }}</span>
+        </div>
+        <span class="boarding-pass__plane"><svg class="icon"><use href="#i-plane"></use></svg></span>
+        <div class="boarding-pass__end">
+          <span class="boarding-pass__code">{{ flight.destination.code }}</span>
+          <span class="boarding-pass__city">{{ flight.destination.name }}</span>
+        </div>
+      </div>
+
+      <dl class="boarding-pass__grid">
+        <div class="boarding-pass__wide"><dt>Пассажир</dt><dd>{{ ticket.passenger.display_name }}</dd></div>
+        <div><dt>Рейс</dt><dd>{{ flight.number }}</dd></div>
+        <div><dt>Дата</dt><dd>{{ flight.departure_at|date:"j E Y" }}</dd></div>
+        <div><dt>Вылет</dt><dd>{{ flight.departure_at|time:"H:i" }}</dd></div>
+        <div><dt>Прилёт</dt><dd>{{ flight.arrival_at|time:"H:i" }}</dd></div>
+        <div><dt>Место</dt><dd>{{ ticket.seat }}</dd></div>
+        <div><dt>Перевозчик</dt><dd>{{ flight.airline.name }}</dd></div>
+      </dl>
+
+      {% if not ticket.is_active %}<div class="stamp" aria-label="Билет отменён">Отменён</div>{% endif %}
+    </div>
+
+    <div class="boarding-pass__stub">
+      <dl>
+        <div><dt>Бронь</dt><dd class="pnr">{{ ticket.pnr }}</dd></div>
+        <div><dt>Место</dt><dd>{{ ticket.seat }}</dd></div>
+        <div><dt>Оплачено</dt><dd>{{ ticket.price|rub }}</dd></div>
+      </dl>
+      <div class="barcode" aria-hidden="true"></div>
+    </div>
+  </article>
+
+  <div class="actions">
+    {% if ticket.can_be_cancelled %}
+      <form method="post" action="{% url 'aviaticket:cancel_ticket' ticket.pnr %}"
+            onsubmit="return confirm('Точно отменить билет? Место может уйти кому-то другому.')">
+        {% csrf_token %}
+        <button class="btn btn--danger" type="submit">Отменить билет</button>
+      </form>
+    {% elif not ticket.is_active and not flight.is_departed %}
+      <form method="post" action="{% url 'aviaticket:buy_ticket' flight.slug %}">
+        {% csrf_token %}
+        <button class="btn btn--accent" type="submit">Вернуть билет за {{ flight.price|rub }}</button>
+      </form>
+    {% endif %}
+    <a class="btn btn--ghost" href="{{ flight.get_absolute_url }}">О рейсе</a>
+    <button class="btn btn--ghost" type="button" onclick="window.print()">
+      <svg class="icon"><use href="#i-printer"></use></svg> Распечатать
+    </button>
+  </div>
+</section>
+{% endwith %}
+{% endblock %}

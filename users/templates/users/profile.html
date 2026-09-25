@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load avia %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<section class="container section">
+  <header class="page-head">
+    <h1>Профиль</h1>
+  </header>
+
+  <div class="profile">
+    <aside class="card profile__summary">
+      <span class="avatar avatar--lg">{{ user.initials }}</span>
+      <h2 class="profile__name">{{ user.display_name }}</h2>
+      <p class="muted">@{{ user.username }} · с нами с {{ user.date_joined|date:"E Y" }}</p>
+
+      <dl class="stats">
+        <div><dt>Впереди</dt><dd>{{ stats.upcoming }}</dd></div>
+        <div><dt>Всего билетов</dt><dd>{{ stats.total }}</dd></div>
+        <div class="stats__wide"><dt>Потрачено на перелёты</dt><dd>{{ stats.spent|rub }}</dd></div>
+      </dl>
+
+      <a class="btn btn--ghost btn--block" href="{% url 'aviaticket:ticket_list' %}">
+        <svg class="icon"><use href="#i-ticket"></use></svg> Мои билеты
+      </a>
+      <a class="btn btn--ghost btn--block" href="{% url 'users:password_change' %}">Сменить пароль</a>
+    </aside>
+
+    <section class="card">
+      <h2 class="card__title">Личные данные</h2>
+      <form class="form form--grid" method="post">
+        {% csrf_token %}
+        {% include "includes/form_errors.html" %}
+        {% for field in form %}{% include "includes/form_field.html" %}{% endfor %}
+        <div class="form__actions">
+          <button class="btn btn--primary btn--lg" type="submit">Сохранить изменения</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</section>
+{% endblock %}
